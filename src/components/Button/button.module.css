@@ -1,0 +1,13 @@
+.btn{
+    border-radius: 10px;
+    background-color: #0D6EFD;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    &&:active{
+        transform: scale(.95);
+    }
+}
