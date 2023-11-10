@@ -2,16 +2,18 @@ import React, { useState } from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from '../Button';
 import { useNavigate } from 'react-router';
+import { HomePage } from '../../pages/Home';
 // import styles from "./moviecard.module.css"
-export const MovieCard= ({Title,Type,Year,Poster,imdbID}) => {
+export const MovieCard= ({Title,Type,Year,Poster,imdbID,fetchID}) => {
 const [fav,setfav]=useState(false)
 const[imdbid,setimdbid]=useState("")
 let navigator=useNavigate()
 
-function handlefav() {
+function handlefav(id) {
   setfav((prev) => !prev);
  
-
+// console.log(id);
+fetchID(id)
 }
 
 
@@ -32,7 +34,7 @@ function uppercase(title=" "){
       <h5 className="card-title">{Title}</h5>
       <p className="card-text">Year: {Year}</p>
       <p className="card-text">Type: {Type?uppercase(Type):"No Information"} </p>
-      <Button onClick={()=>handlefav()} fav={fav} btn={ fav? "Delete  Favorites":"Add Favorites"}/>
+      <Button onClick={()=>handlefav(imdbID)} fav={fav} btn={ fav? "Delete  Favorites":"Add Favorites"}/>
       
     </div>
   </div>

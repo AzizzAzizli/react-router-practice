@@ -6,17 +6,21 @@ import styles from "./home.module.css";
 import { Button } from "../../components/Button";
 import { getMovies } from "../../services";
 import { Nav } from "../../components/Nav";
-// Diğer importları eklediğinizden emin olun
 
-export const HomePage = () => {
+
+
+export const HomePage = (props) => {
   const [movietitle, setMovieTitle] = useState("");
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [favmovies,setfavmovies]=useState([])
+
   let input = useRef();
 
   useEffect(() => {
     if (!movietitle) return;
     fetchData();
+  
   }, [movietitle]);
  
 
@@ -32,6 +36,17 @@ export const HomePage = () => {
       setLoading(false); 
     }
   }
+function getID(id){
+console.log("homePage",id);
+   let favMovie=movies.find(item=>item.imdbID===id)
+  //  console.log(favMovie);
+   setfavmovies(prev=>[...prev,favMovie])
+   props.getFavs(favmovies)
+}
+
+
+
+// console.log(favmovies);
 
   function handleInput() {
     const value = input.current.value;
@@ -62,7 +77,7 @@ export const HomePage = () => {
             <h1 className="text-center text-primary">No movies found.</h1>
           ) : (
             movies.map((item) => (
-              <MovieCard key={item.imdbID} {...item} />
+              <MovieCard key={item.imdbID} {...item}  fetchID={getID}/>
             ))
           )}
         </>
