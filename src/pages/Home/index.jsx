@@ -8,45 +8,39 @@ import { getMovies } from "../../services";
 import { Nav } from "../../components/Nav";
 import { globalContext } from "../../provider/GlobalStore/GlobalProvider";
 
-
-
 export const HomePage = (props) => {
   const [movietitle, setMovieTitle] = useState("");
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [favmovies,setfavmovies]=useState([])
-  const {favs,handleFavs}=useContext(globalContext)
+  const { favs, handleFavs } = useContext(globalContext);
 
   let input = useRef();
 
+  let localFavs = JSON.parse(localStorage.getItem("Favs")) ?? [];
+
+console.log(localFavs);
   useEffect(() => {
     if (!movietitle) return;
     fetchData();
-  
   }, [movietitle]);
- 
+
 
   async function fetchData() {
     try {
       setLoading(true);
       let data = await getMovies(movietitle);
-      console.log(data.data.Search);
+
       setMovies(data.data.Search);
     } catch (error) {
       console.log("Error:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   }
 
-
-// console.log(globalDatas.favs);
-
-// console.log(favmovies);
-
   function handleInput() {
     const value = input.current.value;
-    console.log(value);
+
     setMovieTitle(value);
     input.current.value = "";
   }
@@ -54,36 +48,49 @@ export const HomePage = (props) => {
   return (
     <div>
       <Header />
-      <Nav/>
+      <Nav />
       <main>
         <div className={styles.inputarea}>
           <input ref={input} type="search" />
           <Button onClick={handleInput} btn={"Search"} />
         </div>
         <div className="d-flex flex-wrap justify-content-center gap-3">
-  {movies.length === 0 ? (
-    <h1 className="text-center text-primary">Search any movie</h1>
-  ) : (
-    <>
-      {loading ? (
-        <h1 className="text-center text-primary">Loading...</h1>
-      ) : (
-        <>
-          {movies === undefined ? (
-            <h1 className="text-center text-primary">No movies found.</h1>
+          {movies.length === 0 ? (
+            <h1 className="text-center text-primary">Search any movie</h1>
           ) : (
-            movies.map((item) => {
+            <>
+              {loading ? (
+                <h1 className="text-center text-primary">Loading...</h1>
+              ) : (
+                <>
+                  {movies === undefined ? (
+                    <h1 className="text-center text-primary">
+                      No movies found.
+                    </h1>
+                  ) : (
+                    movies.map((item) => {
+                      let isFav = localFavs.find(
+                        (el) => el.imdbID === item.imdbID
+                      );
 
-              let isFav=favs.find(el=>el.imdbID===item.imdbID)
-              return(
-              <MovieCard key={item.imdbID} setFavs={()=>handleFavs(item)} btn={isFav} {...item}  />
-            )})
+
+                   
+                      return (
+                        
+                        <MovieCard
+                          key={item.imdbID}
+                          setFavs={() => handleFavs(item)}
+                          btn={isFav}
+                          {...item}
+                        />
+                      );
+                    })
+                  )}
+                </>
+              )}
+            </>
           )}
-        </>
-      )}
-    </>
-  )}
-</div>
+        </div>
       </main>
     </div>
   );
